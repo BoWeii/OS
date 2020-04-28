@@ -45,7 +45,7 @@ void birthday_list_exit(void)
 {
 	struct birthday *person, *next;
 	list_for_each_entry_safe(person, next, &birthday_list, list) {
-		printk(KERN_INFO "Freeing node");
+		printk(KERN_INFO "!!!!!!Freeing the node!!!!!!");
 		list_del(&person->list);
 		kfree(person);
 	}
