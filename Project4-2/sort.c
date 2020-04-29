@@ -10,7 +10,6 @@ pthread_mutex_t mutex;
 
 void *sort1()
 {
-    // printf("1 thread\n");
     int i, j, temp;
     for (int i = 0; i < 5; ++i)
     {
@@ -24,15 +23,10 @@ void *sort1()
             }
         }
     }
-
-    pthread_mutex_lock(&mutex);
-    pthread_mutex_unlock(&mutex);
-    pthread_exit(0);
     pthread_exit(NULL); // 離開子執行緒
 }
 void *sort2()
 {
-    // printf("2 thread\n");
     int i, j, temp;
     for (int i = 5; i < 10; ++i)
     {
@@ -46,10 +40,6 @@ void *sort2()
             }
         }
     }
-
-    pthread_mutex_lock(&mutex);
-    pthread_mutex_unlock(&mutex);
-    pthread_exit(0);
     pthread_exit(NULL); // 離開子執行緒
 }
 
@@ -79,8 +69,6 @@ void *merge()
 int main()
 {
     pthread_t t[3];
-    int a[2] = {0, 5};
-
     pthread_create(&t[0], NULL, sort1, NULL);
     pthread_create(&t[1], NULL, sort2, NULL);
     pthread_create(&t[2], NULL, merge, NULL);

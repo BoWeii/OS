@@ -21,6 +21,7 @@ void *child()
 
 int main()
 {
+    printf("input a interger :");
     scanf("%d", &n);
     pthread_t s;
     fibseq[1] = 1;
