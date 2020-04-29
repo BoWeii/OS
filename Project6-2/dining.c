@@ -15,61 +15,48 @@ int list[size];
 
 void *producer(void *x)
 {
-    printf("\nenter the number to be produced : ");
-    int ins;
-    scanf("%d", &ins);
-    // sem_wait(&s_empty);
-    pthread_mutex_lock(&mutex);
-    printf("\nproduced the item : %d\n", ins);
-    list[count++] = ins;
-    pthread_mutex_unlock(&mutex);
-    // sem_post(&s_full);
+    while (1)
+    {
+        sleep(rand() % 5 + 1);
+        int ins = rand();
+        // sem_wait(&s_empty);
+        pthread_mutex_lock(&mutex);
+        printf("\nproduced the item : %d\n", ins);
+        list[count++] = ins;
+        pthread_mutex_unlock(&mutex);
+    }
     pthread_exit(NULL);
 }
 
 void *consumer(void *x)
 {
-    int del;
-    // sem_wait(&s_full);
-    pthread_mutex_lock(&mutex);
-    del = list[--count];
+    while (1)
+    {
+        sleep(rand() % 5 + 1);
+        int del;
+        pthread_mutex_lock(&mutex);
+        if (count != 0)
+        {
+            del = list[--count];
+            printf("consumed the item :  %d\n", del);
+        }
 
-    printf("consumed the item :  %d\n", del);
-    pthread_mutex_unlock(&mutex);
+        pthread_mutex_unlock(&mutex);
+    }
     // sem_post(&s_empty);
     pthread_exit(NULL);
 }
 
 int main()
 {
+    // const long int stime = strtol(argv[1], NULL, 0);
     sem_open("sem", O_CREAT | O_EXCL, S_IRWXU, 5);
     int i, j;
-    printf("\nHow many items wanna produce:  ");
-    scanf("%d", &i);
-    for (int x = 0; x < i; x++)
-    {
-        pthread_create(&t_prod[x], NULL, producer, NULL);
-        sleep(5);
-    }
-    for (int x = 0; x < i; x++)
-    {
-        pthread_join(t_prod[x], NULL);
-    }
-    printf("\nHow many items wanna consume:  ");
-    scanf("%d", &j);
+    for (i = 0; i < 10; i++)
+        pthread_create(&t_prod[i], NULL, producer, NULL);
+    for (i = 0; i < 10; i++)
+        pthread_create(&t_cons[i], NULL, consumer, NULL);
 
-    for (int x = 0; x < j; x++)
-    {
-        if (x > i)
-        {
-            printf("\nCan't consume more Items more \n");
-            break;
-        }
-        pthread_create(&t_cons[x], NULL, consumer, NULL);
-        sleep(1);
-    }
-    for (int x = 0; x < j; x++)
-    {
-        pthread_join(t_cons[x], NULL);
-    }
+    sleep(20);
+    return (0);
 }
